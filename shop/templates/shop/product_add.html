@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить товар</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .menu {
+            background: #333;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            color: #1e90ff;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        button {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'product_list' %}">Все товары</a>
+        <a href=''>Корзина</a>
+        <a href="{% url 'login' %}">Выйти ({{ user.username }})</a>
+    </div>
+    <div class="container">
+        <h1>Добавить товар</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label>Название (рус):</label><br>
+            <input type="text" name="name" required><br>
+            <label>Название (англ):</label><br>
+            <input type="text" name="name_en"><br>
+            <label>Описание:</label><br>
+            <textarea name="description"></textarea><br>
+            <label>Изображение (URL):</label><br>
+            <input type="url" name="image"><br>
+            <label>Категория:</label><br>
+            <select name="category" required>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select><br><br>
+            <button type="submit">Добавить</button>
+        </form>
+        <p style="text-align: center;"><a href="{% url 'index' %}">Отмена</a></p>
+    </div>
+</body>
+</html>

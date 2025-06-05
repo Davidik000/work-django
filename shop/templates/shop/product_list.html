@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Все товары</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .menu {
+            background: #333;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            color: #1e90ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .delete {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .delete:hover {
+            background: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'product_list' %}">Все товары</a>
+        <a href=''>Корзина</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'product_add' %}">Добавить товар</a>
+            <a href="{% url 'logout' %}">Выйти ({{ user.username }})</a>
+        {% else %}
+            <a href="{% url 'register' %}">Регистрация</a>
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
+    <div class="container">
+        <h1>Все товары</h1>
+        <ul>
+            {% for product in products %}
+                <li>
+                    <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'product_delete' product.id %}" class="delete">Удалить</a>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>Товаров нет.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #4CAF50, #1e90ff); 
+        }
+        h1, h2 {
+            text-align: center;
+            color: white;
+        }
+        .menu {
+            background: #333;
+            padding: 12px;
+            text-align: center;
+            width: 99%;
+        }
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            color: #1e90ff;
+        }
+        .search-form {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-form input[type="text"] {
+            padding: 7px;
+            width: 200px;
+        }
+        .search-form button {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        .search-form button:hover {
+            background: green;
+        }
+        .products {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .products ol li {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .products img {
+            width: 80px;
+            height: 85px;
+            margin-right: 10px;
+        }
+        .product-info {
+            flex-grow: 1;
+        }
+        .product-info a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+        .product-info a:hover {
+            text-decoration: underline;
+        }
+        .favorite-button {
+            background: goldenrod;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        .favorite-button:hover {
+            background: #ff6666;
+        }
+        .stats {
+            text-align: center;
+            margin: 20px 0;
+            color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'product_list' %}">Все товары</a>
+        {% if user.is_authenticated %}
+        <a href=''>Корзина</a>
+            <a href="{% url 'login' %}">Выйти ({{ user.username }})</a>
+        {% else %}
+            <a href="{% url 'register' %}">Регистрация</a>
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
+    <h1>Продукты питания</h1>
+    <div class="search-form">
+        <form method="get">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Поиск...">
+            <button type="submit">Найти</button>
+        </form>
+    </div>
+    <div class="products">
+        <h2>Новинки (Топ-5)</h2>
+        <ol>
+            {% for product in products %}
+                <li>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/40" alt="Нет изображения">
+                    {% endif %}
+                    <div class="product-info">
+                        <a href="{% url 'product_detail' product.id %}">{{ product.name }} / {{ product.name_en }}</a>
+                        <p>Добавлен: {{ product.created_at|date:"d.m.Y" }}</p>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'toggle_favorite' product.id %}">
+                            {% csrf_token %}
+                            <button class="favorite-button" type="submit">В избранное</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>Товаров нет.</li>
+            {% endfor %}
+        </ol>
+        <p style="text-align: center;">
+            <a href="{% url 'product_list' %}">Посмотреть все товары</a>
+        </p>
+    </div>
+    <div class="stats">
+        <h2>Популярное</h2>
+        {% for product in favorite_counts %}
+            <p>{{ product.name }}: добавлено в избранное {{ product.favorite_count }} раз</p>
+        {% empty %}
+            <p>Нет данных.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

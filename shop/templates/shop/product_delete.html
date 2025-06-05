@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удалить товар</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f8ff;
+        }
+        .menu {
+            background: #333;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            color: #1e90ff;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'product_list' %}">Все товары</a>
+        <a href=''>Корзина</a>
+        <a href="{% url 'login' %}">Выйти ({{ user.username }})</a>
+    </div>
+    <div class="container">
+        <h1>Удалить товар</h1>
+        <p>Вы уверены, что хотите удалить "{{ product.name }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Удалить</button>
+        </form>
+        <p style="text-align: center;"><a href="{% url 'product_detail' product.id %}">Отмена</a></p>
+    </div>
+</body>
+</html>
